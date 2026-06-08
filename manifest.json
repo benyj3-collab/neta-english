@@ -1,0 +1,13 @@
+{
+  "name": "נטע's English ✨",
+  "short_name": "נטע ✨",
+  "description": "English Adventure - Y2K Edition",
+  "start_url": "/neta-english/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#120820",
+  "theme_color": "#FF2D9B",
+  "icons": [
+    { "src": "icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
