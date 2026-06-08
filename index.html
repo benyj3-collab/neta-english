@@ -2,6 +2,12 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="נטע ✨">
+<meta name="theme-color" content="#FF2D9B">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>נטע's English ✨</title>
 <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Righteous&family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
@@ -534,12 +540,13 @@ function buildLetter(){
   const opts=[ok,...LETTERS.filter(x=>x.l!==ok.l).sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);
   document.getElementById('gTitle').textContent='מה האות? 💅';
   document.getElementById('gContent').innerHTML=`
-    <div class="big-letter">${ok.l}</div>
-    <div class="letter-hint">${ok.e} ${ok.w}</div>
+    <div class="big-letter" onclick="sfx(()=>speak('${ok.l}. ${ok.l} for ${ok.w}'))" style="cursor:pointer" title="לחצי לשמוע">${ok.l}</div>
+    <div class="letter-hint">${ok.e} ${ok.w} <span style="font-size:11px;opacity:0.5">(לחצי על האות לשמוע 🔊)</span></div>
     <div class="choices">
       ${opts.map(o=>`<button class="choice-btn" onclick="pickLetter('${o.l}',this)">${o.l}</button>`).join('')}
     </div>`;
   setAI('<span>💅</span><span>מה האות הזו? תחשבי טוב!</span>','');
+  setTimeout(()=>sfx(()=>speak(`${ok.l}. ${ok.l} for ${ok.w}`)), 400);
 }
 
 function buildWord(){
@@ -560,6 +567,7 @@ function buildWord(){
       ${shuf.map(l=>`<button class="lpick" onclick="pickWordLetter('${l}',this)">${l}</button>`).join('')}
     </div>`;
   setAI('<span>💜</span><span>סדרי את האותיות! את יכולה! ✨</span>','');
+  setTimeout(()=>sfx(()=>speak(curWord.word)), 400);
 }
 
 function pickWordLetter(l,btn){
@@ -569,7 +577,9 @@ function pickWordLetter(l,btn){
   const i=wordProg.length-1;
   if(i<slots.length){ slots[i].textContent=l; slots[i].classList.add('filled'); }
   if(wordProg.length===curWord.ls.length){
-    resolve(wordProg.join('')===curWord.word);
+    const correct = wordProg.join('')===curWord.word;
+    if(correct) sfx(()=>speak(curWord.word));
+    resolve(correct);
   }
 }
 
@@ -611,11 +621,13 @@ function pickMatch(type,val,pair){
     if(ok){
       lb.classList.add('correct'); eb.classList.add('correct');
       lb.disabled=true; eb.disabled=true;
+      sfx(soundCorrect); sfx(()=>speak(matchSel.val));
       matchFound++;
       if(matchFound===matchTotal){ resolve(true); }
       else { addXP(15); addStars(1); setAI('<span>🌟</span><span>נכון! ממשיכים! 💅</span>',''); }
     } else {
       lb.classList.add('wrong'); eb.classList.add('wrong');
+      sfx(soundWrong);
       setTimeout(()=>{ lb.classList.remove('wrong','selected-m'); eb.classList.remove('wrong'); },550);
       S.streak=0; updateStreak();
     }
@@ -639,8 +651,12 @@ async function resolve(ok){
   if(ok){
     S.streak++; addXP(35); addStars(2);
     if(S.tab==='letters') S.lettersDone++;
+    sfx(soundCorrect);
     checkBadges(); confetti();
-  } else { S.streak=0; }
+  } else {
+    S.streak=0;
+    sfx(soundWrong);
+  }
   updateStreak(); updateHero();
   document.getElementById('nextBtn').disabled=false;
   await getAI(ok);
@@ -710,7 +726,7 @@ function checkBadges(){
 }
 function earnBadge(id){
   const el=document.getElementById(id);
-  if(el){ el.classList.add('earned'); addStars(5); confetti(); }
+  if(el){ el.classList.add('earned'); addStars(5); confetti(); sfx(soundFanfare); }
 }
 
 // ── CONFETTI ──
@@ -729,6 +745,93 @@ function confetti(){
     setTimeout(()=>p.remove(),2500);
   }
 }
+
+// ── SOUND ENGINE ──
+const AC = new (window.AudioContext || window.webkitAudioContext)();
+
+function unlockAudio(){
+  if(AC.state==='suspended') AC.resume();
+  document.removeEventListener('touchstart', unlockAudio);
+  document.removeEventListener('click', unlockAudio);
+}
+document.addEventListener('touchstart', unlockAudio);
+document.addEventListener('click', unlockAudio);
+
+// Synthesize a tone
+function tone(freq, type='sine', duration=0.18, vol=0.25, delay=0){
+  const o=AC.createOscillator();
+  const g=AC.createGain();
+  o.connect(g); g.connect(AC.destination);
+  o.type=type; o.frequency.value=freq;
+  const t=AC.currentTime+delay;
+  g.gain.setValueAtTime(0,t);
+  g.gain.linearRampToValueAtTime(vol,t+0.01);
+  g.gain.exponentialRampToValueAtTime(0.001,t+duration);
+  o.start(t); o.stop(t+duration+0.05);
+}
+
+// ✅ Correct – happy two-note chime
+function soundCorrect(){
+  tone(523, 'sine', 0.15, 0.3);       // C5
+  tone(659, 'sine', 0.2,  0.3, 0.12); // E5
+  tone(784, 'sine', 0.25, 0.3, 0.24); // G5
+}
+
+// ❌ Wrong – low "buzz"
+function soundWrong(){
+  tone(200, 'sawtooth', 0.25, 0.2);
+  tone(150, 'sawtooth', 0.2,  0.15, 0.1);
+}
+
+// 🎉 Fanfare – badge / level up
+function soundFanfare(){
+  const notes=[523,659,784,1047];
+  notes.forEach((f,i)=> tone(f,'triangle',0.22,0.3,i*0.1));
+  setTimeout(()=>{ tone(1047,'sine',0.4,0.35); },450);
+}
+
+// 🔊 Speak letter/word with Web Speech API
+function speak(text){
+  if(!window.speechSynthesis) return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US'; u.rate=0.82; u.pitch=1.1; u.volume=1;
+  // Pick an English voice if available
+  const voices=speechSynthesis.getVoices();
+  const eng=voices.find(v=>v.lang.startsWith('en')&&v.name.includes('Female'))
+          || voices.find(v=>v.lang.startsWith('en-US'))
+          || voices.find(v=>v.lang.startsWith('en'));
+  if(eng) u.voice=eng;
+  speechSynthesis.speak(u);
+}
+
+// Preload voices (needed on iOS)
+if(window.speechSynthesis){
+  speechSynthesis.getVoices();
+  speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices();
+}
+
+// ── SOUND BUTTON ──
+(function addSoundToggle(){
+  const btn=document.createElement('button');
+  btn.id='sndBtn';
+  btn.textContent='🔊';
+  btn.title='הפעל/כבה צלילים';
+  btn.style.cssText=`position:fixed;bottom:18px;left:16px;z-index:999;
+    background:rgba(255,45,155,0.18);border:2px solid rgba(199,125,255,0.45);
+    border-radius:50%;width:44px;height:44px;font-size:20px;cursor:pointer;
+    backdrop-filter:blur(8px);transition:all 0.2s;`;
+  btn.onclick=()=>{
+    S.muted=!S.muted;
+    btn.textContent=S.muted?'🔇':'🔊';
+    btn.style.opacity=S.muted?'0.45':'1';
+    if(S.muted) speechSynthesis.cancel();
+  };
+  document.body.appendChild(btn);
+})();
+
+S.muted=false;
+function sfx(fn){ if(!S.muted) fn(); }
 
 init();
 </script>
