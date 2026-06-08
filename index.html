@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#FF2D9B">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>נטע's English ✨</title>
-<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Righteous&family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Pacifico&family=Righteous&family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
   --hot-pink: #FF2D9B;
@@ -75,8 +75,8 @@ body::before {
 }
 
 .neta-title {
-  font-family:'Pacifico', cursive;
-  font-size: 52px;
+  font-family:'Great Vibes', cursive;
+  font-size: 88px;
   background: var(--chrome);
   -webkit-background-clip:text; -webkit-text-fill-color:transparent;
   background-clip:text;
@@ -84,7 +84,6 @@ body::before {
   animation: chromeShift 4s ease infinite;
   filter: drop-shadow(0 0 20px rgba(199,125,255,0.6));
   line-height:1.1;
-  letter-spacing: 2px;
 }
 @keyframes chromeShift {
   0%,100% { background-position:0% 50%; }
@@ -375,10 +374,15 @@ body::before {
 
   <!-- HERO BANNER -->
   <div class="hero-banner">
-    <div class="neta-title">נטע</div>
+    <div class="neta-title">Neta</div>
     <div class="title-sub">english adventure ✦ y2k edition</div>
   </div>
   <div class="bling">💎 ✨ 💅 ✨ 💎</div>
+  <div style="text-align:center;margin-bottom:6px;">
+    <button onclick="toggleParentPanel()" style="background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.3);border-radius:20px;padding:5px 14px;color:rgba(232,224,255,0.6);font-size:11px;font-family:'Righteous',cursive;cursor:pointer;letter-spacing:1px;">
+      🔔 אזור הורים
+    </button>
+  </div>
 
   <!-- STATS -->
   <div class="stats-row">
@@ -432,6 +436,19 @@ body::before {
       <div class="badge" id="b-letters"><span class="badge-icon">🔤</span>ABC</div>
       <div class="badge" id="b-words"><span class="badge-icon">📖</span>מילים!</div>
     </div>
+  </div>
+
+  <!-- PARENTS PANEL -->
+  <div id="parentPanel" style="display:none;background:rgba(255,215,0,0.07);border:1.5px solid rgba(255,215,0,0.35);border-radius:18px;padding:16px;margin-bottom:14px;">
+    <div style="font-family:'Righteous',cursive;font-size:13px;color:var(--gold);letter-spacing:2px;margin-bottom:10px;">🔔 התראות הורים</div>
+    <div style="font-size:12px;color:rgba(232,224,255,0.6);margin-bottom:10px;">התראות Push ישלחו לטלפון שלכם בכל פעם שנטע עולה רמה, מרוויחה תג, או שוברת שיא!</div>
+    <div id="notifStatus" style="font-size:12px;font-weight:800;color:var(--mint);margin-bottom:8px;"></div>
+    <button onclick="requestNotifPermission()" id="notifBtn"
+      style="width:100%;padding:10px;border-radius:12px;border:none;
+      background:linear-gradient(135deg,var(--deep-purple),var(--hot-pink));
+      color:#fff;font-family:'Righteous',cursive;font-size:13px;cursor:pointer;">
+      🔔 הפעל התראות
+    </button>
   </div>
 
   <!-- TABS -->
@@ -540,13 +557,19 @@ function buildLetter(){
   const opts=[ok,...LETTERS.filter(x=>x.l!==ok.l).sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);
   document.getElementById('gTitle').textContent='מה האות? 💅';
   document.getElementById('gContent').innerHTML=`
-    <div class="big-letter" onclick="sfx(()=>speak('${ok.l}. ${ok.l} for ${ok.w}'))" style="cursor:pointer" title="לחצי לשמוע">${ok.l}</div>
-    <div class="letter-hint">${ok.e} ${ok.w} <span style="font-size:11px;opacity:0.5">(לחצי על האות לשמוע 🔊)</span></div>
+    <div class="big-letter" onclick="sfx(()=>speakSequence(['The letter ${ok.l}', '${ok.l} is for ${ok.w}', '${ok.w}']))" style="cursor:pointer" title="לחצי לשמוע שוב 🔊">${ok.l}</div>
+    <div class="letter-hint">${ok.e} <strong style="font-size:17px;color:var(--gold)">${ok.w}</strong>
+      <div style="font-size:11px;margin-top:4px;opacity:0.45">לחצי על האות לשמוע שוב 🔊</div>
+    </div>
     <div class="choices">
       ${opts.map(o=>`<button class="choice-btn" onclick="pickLetter('${o.l}',this)">${o.l}</button>`).join('')}
     </div>`;
   setAI('<span>💅</span><span>מה האות הזו? תחשבי טוב!</span>','');
-  setTimeout(()=>sfx(()=>speak(`${ok.l}. ${ok.l} for ${ok.w}`)), 400);
+  setTimeout(()=>sfx(()=>speakSequence([
+    `The letter ${ok.l}.`,
+    `${ok.l} is for ${ok.w}.`,
+    `${ok.w}... ${ok.w}.`
+  ], 700)), 500);
 }
 
 function buildWord(){
@@ -567,7 +590,12 @@ function buildWord(){
       ${shuf.map(l=>`<button class="lpick" onclick="pickWordLetter('${l}',this)">${l}</button>`).join('')}
     </div>`;
   setAI('<span>💜</span><span>סדרי את האותיות! את יכולה! ✨</span>','');
-  setTimeout(()=>sfx(()=>speak(curWord.word)), 400);
+  setTimeout(()=>sfx(()=>speakSequence([
+    `The word is ${curWord.word}.`,
+    `Listen carefully.`,
+    `${curWord.word}.`,
+    `Now spell it!`
+  ], 750)), 500);
 }
 
 function pickWordLetter(l,btn){
@@ -578,7 +606,7 @@ function pickWordLetter(l,btn){
   if(i<slots.length){ slots[i].textContent=l; slots[i].classList.add('filled'); }
   if(wordProg.length===curWord.ls.length){
     const correct = wordProg.join('')===curWord.word;
-    if(correct) sfx(()=>speak(curWord.word));
+    if(correct) sfx(()=>speakSequence([`${curWord.word}! Great job!`, `${curWord.word} means ${curWord.heb} in Hebrew.`], 700));
     resolve(correct);
   }
 }
@@ -621,7 +649,8 @@ function pickMatch(type,val,pair){
     if(ok){
       lb.classList.add('correct'); eb.classList.add('correct');
       lb.disabled=true; eb.disabled=true;
-      sfx(soundCorrect); sfx(()=>speak(matchSel.val));
+      sfx(soundCorrect);
+      sfx(()=>speakSequence([`${matchSel.val}!`, `${matchSel.val} is for ${LETTERS.find(l=>l.l===matchSel.val)?.w||matchSel.val}.`], 700));
       matchFound++;
       if(matchFound===matchTotal){ resolve(true); }
       else { addXP(15); addStars(1); setAI('<span>🌟</span><span>נכון! ממשיכים! 💅</span>',''); }
@@ -695,7 +724,12 @@ function setAI(html,cls){
 function addXP(n){
   S.xp+=n;
   const need=S.level*100;
-  if(S.xp>=need){ S.xp-=need; S.level++; document.getElementById('levelNum').textContent=S.level; }
+  if(S.xp>=need){
+    S.xp-=need; S.level++;
+    document.getElementById('levelNum').textContent=S.level;
+    notifyLevelUp(S.level);
+    sfx(soundFanfare);
+  }
   const pct=(S.xp/(S.level*100))*100;
   document.getElementById('xpFill').style.width=pct+'%';
   document.getElementById('xpText').textContent=`${S.xp} / ${S.level*100}`;
@@ -717,16 +751,16 @@ function updateHero(){
 
 // ── BADGES ──
 function checkBadges(){
-  if(!S.badges.first){ S.badges.first=true; earnBadge('b-first'); }
-  if(S.streak>=3&&!S.badges.s3){ S.badges.s3=true; earnBadge('b-s3'); }
-  if(S.streak>=5&&!S.badges.s5){ S.badges.s5=true; earnBadge('b-s5'); }
-  if(S.streak>=10&&!S.badges.s10){ S.badges.s10=true; earnBadge('b-s10'); }
-  if(S.lettersDone>=5&&!S.badges.letters){ S.badges.letters=true; earnBadge('b-letters'); }
-  if(S.tab==='words'&&!S.badges.words){ S.badges.words=true; earnBadge('b-words'); }
+  if(!S.badges.first){ S.badges.first=true; earnBadge('b-first','ראשונה!'); }
+  if(S.streak>=3&&!S.badges.s3){ S.badges.s3=true; earnBadge('b-s3','3 ברצף'); notifyStreak(3); }
+  if(S.streak>=5&&!S.badges.s5){ S.badges.s5=true; earnBadge('b-s5','5 ברצף'); notifyStreak(5); }
+  if(S.streak>=10&&!S.badges.s10){ S.badges.s10=true; earnBadge('b-s10','10 ברצף'); notifyStreak(10); }
+  if(S.lettersDone>=5&&!S.badges.letters){ S.badges.letters=true; earnBadge('b-letters','ABC'); }
+  if(S.tab==='words'&&!S.badges.words){ S.badges.words=true; earnBadge('b-words','מילים!'); }
 }
-function earnBadge(id){
+function earnBadge(id, name='תג חדש'){
   const el=document.getElementById(id);
-  if(el){ el.classList.add('earned'); addStars(5); confetti(); sfx(soundFanfare); }
+  if(el){ el.classList.add('earned'); addStars(5); confetti(); sfx(soundFanfare); notifyBadge(name); }
 }
 
 // ── CONFETTI ──
@@ -790,19 +824,38 @@ function soundFanfare(){
   setTimeout(()=>{ tone(1047,'sine',0.4,0.35); },450);
 }
 
-// 🔊 Speak letter/word with Web Speech API
+// 🔊 Speak with slow rate for kids
 function speak(text){
   if(!window.speechSynthesis) return;
   speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(text);
-  u.lang='en-US'; u.rate=0.82; u.pitch=1.1; u.volume=1;
-  // Pick an English voice if available
+  u.lang='en-US'; u.rate=0.62; u.pitch=1.15; u.volume=1;
   const voices=speechSynthesis.getVoices();
   const eng=voices.find(v=>v.lang.startsWith('en')&&v.name.includes('Female'))
           || voices.find(v=>v.lang.startsWith('en-US'))
           || voices.find(v=>v.lang.startsWith('en'));
   if(eng) u.voice=eng;
   speechSynthesis.speak(u);
+}
+
+// Speak multiple sentences with a pause between them
+function speakSequence(sentences, delayBetween=900){
+  if(!window.speechSynthesis) return;
+  speechSynthesis.cancel();
+  let i=0;
+  function next(){
+    if(i>=sentences.length) return;
+    const u=new SpeechSynthesisUtterance(sentences[i]);
+    u.lang='en-US'; u.rate=0.62; u.pitch=1.15; u.volume=1;
+    const voices=speechSynthesis.getVoices();
+    const eng=voices.find(v=>v.lang.startsWith('en')&&v.name.includes('Female'))
+            || voices.find(v=>v.lang.startsWith('en-US'))
+            || voices.find(v=>v.lang.startsWith('en'));
+    if(eng) u.voice=eng;
+    u.onend=()=>{ i++; setTimeout(next, delayBetween); };
+    speechSynthesis.speak(u);
+  }
+  next();
 }
 
 // Preload voices (needed on iOS)
@@ -832,6 +885,94 @@ if(window.speechSynthesis){
 
 S.muted=false;
 function sfx(fn){ if(!S.muted) fn(); }
+
+// ── PARENT NOTIFICATIONS ──
+function toggleParentPanel(){
+  const p=document.getElementById('parentPanel');
+  p.style.display = p.style.display==='none' ? 'block' : 'none';
+  if(p.style.display==='block') updateNotifUI();
+}
+
+function updateNotifUI(){
+  const btn=document.getElementById('notifBtn');
+  const status=document.getElementById('notifStatus');
+  if(!('Notification' in window)){
+    status.textContent='❌ הדפדפן הזה לא תומך בהתראות';
+    status.style.color='#FF6464';
+    btn.style.display='none';
+    return;
+  }
+  if(Notification.permission==='granted'){
+    status.textContent='✅ התראות פעילות! תקבלו עדכון על כל הישג של נטע';
+    status.style.color='var(--mint)';
+    btn.textContent='🔔 שלח התראת בדיקה';
+    btn.onclick=sendTestNotif;
+  } else if(Notification.permission==='denied'){
+    status.textContent='⚠️ ההתראות חסומות. אפשרו ב-Settings > Safari > התראות';
+    status.style.color='var(--gold)';
+    btn.style.display='none';
+  } else {
+    status.textContent='לחצו להפעיל התראות על הטלפון שלכם';
+    status.style.color='rgba(232,224,255,0.6)';
+    btn.textContent='🔔 הפעל התראות';
+    btn.onclick=requestNotifPermission;
+  }
+}
+
+async function requestNotifPermission(){
+  if(!('Notification' in window)){
+    alert('הדפדפן שלך לא תומך בהתראות. נסו ב-Safari על האייפון.');
+    return;
+  }
+  const perm = await Notification.requestPermission();
+  updateNotifUI();
+  if(perm==='granted'){
+    sendParentNotif('🎉 כל הכבוד!','מערכת ההתראות פעילה! תקבלו עדכון על כל הישג של נטע 💜');
+  }
+}
+
+function sendParentNotif(title, body){
+  if(Notification.permission!=='granted') return;
+  try {
+    new Notification(title, {
+      body,
+      icon: 'icon.png',
+      badge: 'icon.png',
+      tag: 'neta-progress',
+      renotify: true,
+    });
+  } catch(e){ console.log('Notif error:', e); }
+}
+
+function sendTestNotif(){
+  sendParentNotif('🌟 בדיקת מערכת','ההתראות עובדות! נטע ממשיכה ללמוד אנגלית ✨');
+}
+
+// Called on level up
+function notifyLevelUp(level){
+  const levelNames=['','מתחילה','לוחמת','פיה','מלכה'];
+  const name=levelNames[Math.min(level,4)]||'אלופה';
+  sendParentNotif(
+    `👑 נטע עלתה לרמה ${level}!`,
+    `נטע הגיעה לרמת "${name}" באנגלית! כדאי לעודד אותה 💪✨`
+  );
+}
+
+// Called on badge earned
+function notifyBadge(badgeName){
+  sendParentNotif(
+    `🏆 נטע קיבלה תג חדש!`,
+    `נטע הרוויחה את תג "${badgeName}" — היא עובדת קשה! 🌟`
+  );
+}
+
+// Called on streak milestone
+function notifyStreak(n){
+  sendParentNotif(
+    `🔥 ${n} תשובות נכונות ברצף!`,
+    `נטע ענתה נכון ${n} פעמים ברצף — היא בלהבות! 💅🔥`
+  );
+}
 
 init();
 </script>
