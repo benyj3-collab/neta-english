@@ -219,14 +219,15 @@ body::before {
 
 /* BIG LETTER */
 .big-letter {
-  font-family:'Pacifico',cursive;
-  font-size:110px; line-height:1;
+  font-family:'Righteous',cursive;
+  font-size:120px; line-height:1;
   background: linear-gradient(135deg, var(--bubblegum), var(--lilac), var(--gold));
   -webkit-background-clip:text; -webkit-text-fill-color:transparent;
   background-clip:text;
   filter:drop-shadow(0 6px 24px rgba(255,133,200,0.5));
   animation:popIn 0.4s cubic-bezier(.34,1.56,.64,1);
   margin:8px 0 4px;
+  letter-spacing: 2px;
 }
 @keyframes popIn { from{transform:scale(0.4) rotate(-10deg);opacity:0} to{transform:scale(1) rotate(0deg);opacity:1} }
 
@@ -240,8 +241,9 @@ body::before {
   border:2px solid rgba(199,125,255,0.35);
   background:rgba(255,45,155,0.08);
   color:var(--silver);
-  font-family:'Pacifico',cursive;
-  font-size:22px;
+  font-family:'Righteous',cursive;
+  font-size:26px;
+  letter-spacing:2px;
   cursor:pointer; transition:all 0.18s;
   backdrop-filter:blur(6px);
 }
@@ -252,38 +254,41 @@ body::before {
 @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-9px)} 75%{transform:translateX(9px)} }
 
 /* WORD BOX */
-.word-display { display:flex; gap:9px; flex-wrap:wrap; justify-content:center; margin:14px 0; }
+.word-display { display:flex; gap:9px; flex-wrap:nowrap; justify-content:center; margin:14px 0; direction:ltr; }
 .letter-box {
-  width:46px; height:54px; border-radius:12px;
+  width:50px; height:58px; border-radius:12px;
   border:2px solid rgba(199,125,255,0.4);
   background:rgba(255,45,155,0.08);
   display:flex; align-items:center; justify-content:center;
-  font-family:'Pacifico',cursive; font-size:22px; color:var(--lilac);
+  font-family:'Righteous',cursive; font-size:26px; color:var(--lilac);
+  letter-spacing:0;
 }
 .letter-box.filled { border-color:var(--gold); background:rgba(255,215,0,0.1); color:var(--gold); animation:popIn 0.3s ease; }
 
 /* LETTER PICK BTNS */
-.letter-pick-btns { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:8px 0; }
+.letter-pick-btns { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:8px 0; direction:ltr; }
 .lpick {
-  width:54px; height:54px; border-radius:14px;
+  width:58px; height:58px; border-radius:14px;
   border:2px solid rgba(199,125,255,0.4);
   background:rgba(255,45,155,0.1);
-  font-family:'Pacifico',cursive; font-size:20px;
+  font-family:'Righteous',cursive; font-size:24px;
   color:var(--silver); cursor:pointer; transition:all 0.18s;
+  letter-spacing:0;
 }
 .lpick:hover { border-color:var(--hot-pink); transform:scale(1.08); }
 .lpick:disabled { opacity:0.25; cursor:default; transform:none; }
 
 /* MATCH GRID */
-.match-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:9px; width:100%; }
+.match-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; width:100%; }
 .match-btn {
   aspect-ratio:1; border-radius:14px;
   border:2px solid rgba(199,125,255,0.35);
   background:rgba(255,45,155,0.08);
-  font-size:clamp(16px,5vw,24px);
-  font-family:'Pacifico',cursive; color:var(--silver);
+  font-size:clamp(22px,7vw,34px);
+  font-family:'Righteous',cursive; color:var(--silver);
   cursor:pointer; transition:all 0.18s;
   display:flex; align-items:center; justify-content:center;
+  min-height:72px;
 }
 .match-btn:hover:not(:disabled) { border-color:var(--bubblegum); transform:scale(1.06); }
 .match-btn.selected-m { border-color:var(--gold); background:rgba(255,215,0,0.12); box-shadow:0 0 14px rgba(255,215,0,0.4); }
@@ -578,15 +583,15 @@ function buildWord(){
   wordProg=[];
   document.getElementById('gTitle').textContent=`סדרי את האותיות! ${curWord.e}`;
   document.getElementById('gContent').innerHTML=`
-    <div style="font-size:58px;margin-bottom:10px">${curWord.e}</div>
-    <div style="font-size:13px;color:rgba(232,224,255,0.55);margin-bottom:10px">
+    <div style="font-size:62px;margin-bottom:6px">${curWord.e}</div>
+    <div style="font-size:13px;color:rgba(232,224,255,0.55);margin-bottom:14px">
       עברית: <strong style="color:var(--gold)">${curWord.heb}</strong>
     </div>
-    <div class="word-display" id="wSlots">
+    <div class="word-display" id="wSlots" dir="ltr" style="direction:ltr;">
       ${curWord.ls.map(()=>'<div class="letter-box">_</div>').join('')}
     </div>
-    <div style="font-size:12px;color:rgba(232,224,255,0.4);margin-bottom:10px">לחצי על האותיות בסדר הנכון:</div>
-    <div class="letter-pick-btns" id="lPicks">
+    <div style="font-size:12px;color:rgba(232,224,255,0.4);margin-bottom:10px;direction:rtl;">לחצי על האותיות משמאל לימין ⬅️</div>
+    <div class="letter-pick-btns" id="lPicks" dir="ltr" style="direction:ltr;">
       ${shuf.map(l=>`<button class="lpick" onclick="pickWordLetter('${l}',this)">${l}</button>`).join('')}
     </div>`;
   setAI('<span>💜</span><span>סדרי את האותיות! את יכולה! ✨</span>','');
@@ -600,7 +605,7 @@ function buildWord(){
 
 function pickWordLetter(l,btn){
   if(S.answered) return;
-  wordProg.push(l); btn.disabled=true;
+  wordProg.push(l); btn.disabled=true; btn.style.opacity='0.3';
   const slots=document.querySelectorAll('#wSlots .letter-box');
   const i=wordProg.length-1;
   if(i<slots.length){ slots[i].textContent=l; slots[i].classList.add('filled'); }
