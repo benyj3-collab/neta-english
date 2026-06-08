@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>נטע's English ✨</title>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Righteous&family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --hot-pink: #FF2D9B;
+  --bubblegum: #FF85C8;
+  --lilac: #C77DFF;
+  --deep-purple: #7B2FBE;
+  --silver: #E8E0FF;
+  --gold: #FFD700;
+  --chrome: linear-gradient(135deg, #e8e0ff, #c77dff, #ff85c8, #ffd700, #c77dff);
+  --bg: #120820;
+  --card: rgba(255,45,155,0.08);
+  --card-border: rgba(199,125,255,0.35);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Heebo', sans-serif;
+  background: var(--bg);
+  color: var(--silver);
+  min-height: 100vh;
+  overflow-x: hidden;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ctext y='24' font-size='24'%3E💅%3C/text%3E%3C/svg%3E"), auto;
+}
+
+/* ── ANIMATED BG ── */
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 10%, rgba(199,125,255,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 80% 80%, rgba(255,45,155,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 30% at 60% 30%, rgba(255,215,0,0.06) 0%, transparent 50%);
+  pointer-events:none; z-index:0;
+  animation: bgPulse 6s ease-in-out infinite alternate;
+}
+@keyframes bgPulse {
+  from { opacity:0.7; }
+  to   { opacity:1; }
+}
+
+/* ── SPARKLES ── */
+.sparkle {
+  position:fixed; pointer-events:none; z-index:0;
+  font-size:14px; animation: sparkleFly linear infinite;
+  opacity:0;
+}
+@keyframes sparkleFly {
+  0%   { transform:translateY(100vh) rotate(0deg); opacity:0; }
+  10%  { opacity:1; }
+  90%  { opacity:0.6; }
+  100% { transform:translateY(-10vh) rotate(720deg); opacity:0; }
+}
+
+.app { position:relative; z-index:1; max-width:460px; margin:0 auto; padding:16px 14px 32px; }
+
+/* ── HERO BANNER ── */
+.hero-banner {
+  text-align:center;
+  padding: 28px 20px 16px;
+  position:relative;
+}
+
+.neta-title {
+  font-family:'Pacifico', cursive;
+  font-size: 52px;
+  background: var(--chrome);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+  background-size: 300% 300%;
+  animation: chromeShift 4s ease infinite;
+  filter: drop-shadow(0 0 20px rgba(199,125,255,0.6));
+  line-height:1.1;
+  letter-spacing: 2px;
+}
+@keyframes chromeShift {
+  0%,100% { background-position:0% 50%; }
+  50%      { background-position:100% 50%; }
+}
+
+.title-sub {
+  font-family:'Righteous', cursive;
+  font-size:15px;
+  letter-spacing:6px;
+  color:var(--bubblegum);
+  text-transform:uppercase;
+  margin-top:4px;
+  opacity:0.85;
+}
+
+/* ── BLING DIVIDER ── */
+.bling {
+  text-align:center;
+  font-size:20px;
+  letter-spacing:6px;
+  margin: 10px 0;
+  animation: blingPop 1.5s ease-in-out infinite alternate;
+}
+@keyframes blingPop {
+  from { letter-spacing:4px; opacity:0.7; }
+  to   { letter-spacing:8px; opacity:1; }
+}
+
+/* ── STATS ROW ── */
+.stats-row {
+  display:flex; gap:10px; margin-bottom:16px;
+}
+.stat-pill {
+  flex:1; text-align:center;
+  background: rgba(255,45,155,0.1);
+  border: 1.5px solid var(--card-border);
+  border-radius: 50px;
+  padding: 10px 8px;
+  backdrop-filter: blur(8px);
+}
+.stat-num {
+  font-family:'Righteous',cursive;
+  font-size:22px;
+  background: var(--chrome);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text; background-size:300% 300%;
+  animation: chromeShift 4s ease infinite;
+}
+.stat-label { font-size:10px; color:rgba(232,224,255,0.55); font-weight:700; margin-top:1px; }
+
+/* ── XP BAR ── */
+.xp-wrap {
+  background: rgba(255,45,155,0.08);
+  border: 1.5px solid var(--card-border);
+  border-radius:16px;
+  padding:12px 16px;
+  margin-bottom:14px;
+}
+.xp-meta { display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:rgba(232,224,255,0.6); margin-bottom:7px; }
+.xp-track { height:10px; background:rgba(255,255,255,0.07); border-radius:5px; overflow:hidden; }
+.xp-fill {
+  height:100%;
+  background: linear-gradient(90deg, var(--deep-purple), var(--hot-pink), var(--gold));
+  border-radius:5px;
+  transition: width 0.9s cubic-bezier(.34,1.56,.64,1);
+  position:relative;
+}
+.xp-fill::after {
+  content:''; position:absolute; right:0; top:0; width:30px; height:100%;
+  background:rgba(255,255,255,0.5); filter:blur(6px);
+  animation: xpShine 1.4s ease-in-out infinite;
+}
+@keyframes xpShine { 0%,100%{opacity:0} 50%{opacity:1} }
+
+/* ── STREAK ── */
+.streak-row {
+  display:flex; align-items:center; justify-content:space-between;
+  background:rgba(255,215,0,0.07);
+  border:1.5px solid rgba(255,215,0,0.3);
+  border-radius:14px;
+  padding:9px 16px;
+  margin-bottom:14px;
+  font-size:13px; font-weight:800;
+}
+.streak-num {
+  font-family:'Righteous',cursive; font-size:28px;
+  color:var(--gold); text-shadow:0 0 12px rgba(255,215,0,0.5);
+}
+
+/* ── TABS ── */
+.tabs { display:flex; gap:8px; margin-bottom:16px; }
+.tab {
+  flex:1; padding:11px 6px; border-radius:50px;
+  border:2px solid rgba(199,125,255,0.3);
+  background:rgba(255,45,155,0.06);
+  color:rgba(232,224,255,0.5);
+  font-family:'Righteous',cursive; font-size:12px;
+  cursor:pointer; transition:all 0.2s; text-align:center;
+}
+.tab.active {
+  background:linear-gradient(135deg,var(--deep-purple),var(--hot-pink));
+  border-color:transparent; color:#fff;
+  box-shadow:0 4px 18px rgba(255,45,155,0.4);
+}
+
+/* ── GAME CARD ── */
+.game-card {
+  background: rgba(255,45,155,0.07);
+  border:2px solid var(--card-border);
+  border-radius:28px;
+  padding:26px 20px;
+  margin-bottom:16px;
+  min-height:340px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center;
+  backdrop-filter:blur(10px);
+  box-shadow: 0 8px 40px rgba(199,125,255,0.12), inset 0 1px 0 rgba(255,255,255,0.06);
+  position:relative; overflow:hidden;
+}
+.game-card::before {
+  content:'';
+  position:absolute; top:-1px; left:10%; right:10%; height:2px;
+  background: linear-gradient(90deg, transparent, var(--lilac), var(--hot-pink), var(--gold), transparent);
+  border-radius:2px;
+}
+
+.game-title {
+  font-family:'Righteous',cursive;
+  font-size:17px; color:var(--bubblegum);
+  margin-bottom:18px; letter-spacing:1px;
+}
+
+/* BIG LETTER */
+.big-letter {
+  font-family:'Pacifico',cursive;
+  font-size:110px; line-height:1;
+  background: linear-gradient(135deg, var(--bubblegum), var(--lilac), var(--gold));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+  filter:drop-shadow(0 6px 24px rgba(255,133,200,0.5));
+  animation:popIn 0.4s cubic-bezier(.34,1.56,.64,1);
+  margin:8px 0 4px;
+}
+@keyframes popIn { from{transform:scale(0.4) rotate(-10deg);opacity:0} to{transform:scale(1) rotate(0deg);opacity:1} }
+
+.letter-hint { font-size:15px; color:rgba(232,224,255,0.55); margin-bottom:18px; }
+
+/* CHOICES */
+.choices { display:grid; grid-template-columns:1fr 1fr; gap:12px; width:100%; }
+.choice-btn {
+  padding:17px 10px;
+  border-radius:18px;
+  border:2px solid rgba(199,125,255,0.35);
+  background:rgba(255,45,155,0.08);
+  color:var(--silver);
+  font-family:'Pacifico',cursive;
+  font-size:22px;
+  cursor:pointer; transition:all 0.18s;
+  backdrop-filter:blur(6px);
+}
+.choice-btn:hover { border-color:var(--bubblegum); transform:translateY(-3px) scale(1.03); box-shadow:0 8px 24px rgba(255,133,200,0.3); }
+.choice-btn.correct { background:linear-gradient(135deg,rgba(0,230,160,0.3),rgba(0,200,230,0.3)); border-color:#00E6A0; color:#fff; animation:celebrate 0.45s ease; }
+.choice-btn.wrong   { background:rgba(255,60,60,0.2); border-color:#FF5050; animation:shake 0.4s ease; }
+@keyframes celebrate { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-9px)} 75%{transform:translateX(9px)} }
+
+/* WORD BOX */
+.word-display { display:flex; gap:9px; flex-wrap:wrap; justify-content:center; margin:14px 0; }
+.letter-box {
+  width:46px; height:54px; border-radius:12px;
+  border:2px solid rgba(199,125,255,0.4);
+  background:rgba(255,45,155,0.08);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Pacifico',cursive; font-size:22px; color:var(--lilac);
+}
+.letter-box.filled { border-color:var(--gold); background:rgba(255,215,0,0.1); color:var(--gold); animation:popIn 0.3s ease; }
+
+/* LETTER PICK BTNS */
+.letter-pick-btns { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:8px 0; }
+.lpick {
+  width:54px; height:54px; border-radius:14px;
+  border:2px solid rgba(199,125,255,0.4);
+  background:rgba(255,45,155,0.1);
+  font-family:'Pacifico',cursive; font-size:20px;
+  color:var(--silver); cursor:pointer; transition:all 0.18s;
+}
+.lpick:hover { border-color:var(--hot-pink); transform:scale(1.08); }
+.lpick:disabled { opacity:0.25; cursor:default; transform:none; }
+
+/* MATCH GRID */
+.match-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:9px; width:100%; }
+.match-btn {
+  aspect-ratio:1; border-radius:14px;
+  border:2px solid rgba(199,125,255,0.35);
+  background:rgba(255,45,155,0.08);
+  font-size:clamp(16px,5vw,24px);
+  font-family:'Pacifico',cursive; color:var(--silver);
+  cursor:pointer; transition:all 0.18s;
+  display:flex; align-items:center; justify-content:center;
+}
+.match-btn:hover:not(:disabled) { border-color:var(--bubblegum); transform:scale(1.06); }
+.match-btn.selected-m { border-color:var(--gold); background:rgba(255,215,0,0.12); box-shadow:0 0 14px rgba(255,215,0,0.4); }
+.match-btn.correct    { background:rgba(0,230,160,0.2); border-color:#00E6A0; }
+.match-btn.wrong      { background:rgba(255,60,60,0.15); border-color:#FF5050; animation:shake 0.4s ease; }
+
+/* AI FEEDBACK */
+.ai-box {
+  width:100%;
+  background:rgba(199,125,255,0.1);
+  border:1.5px solid rgba(199,125,255,0.3);
+  border-radius:18px;
+  padding:14px 16px;
+  margin:12px 0 0;
+  font-size:14px; font-weight:700; line-height:1.55;
+  text-align:right; min-height:58px;
+  display:flex; align-items:center; gap:10px;
+}
+.ai-box.loading { color:rgba(232,224,255,0.45); justify-content:center; }
+
+/* NEXT BTN */
+.next-btn {
+  width:100%; padding:16px; border-radius:50px; border:none;
+  background:linear-gradient(135deg,var(--deep-purple),var(--hot-pink),var(--gold));
+  background-size:200% 200%; animation:chromeShift 3s ease infinite;
+  color:#fff; font-family:'Righteous',cursive; font-size:17px;
+  cursor:pointer; transition:all 0.2s; margin-top:14px;
+  box-shadow:0 6px 22px rgba(255,45,155,0.45);
+  letter-spacing:1px;
+}
+.next-btn:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(255,45,155,0.55); }
+.next-btn:disabled { opacity:0.3; cursor:not-allowed; transform:none; }
+
+/* BADGES */
+.badges-wrap { margin-bottom:16px; }
+.badges-label { font-size:11px; font-weight:800; color:rgba(232,224,255,0.4); letter-spacing:2px; text-transform:uppercase; margin-bottom:8px; }
+.badges { display:flex; gap:9px; flex-wrap:wrap; }
+.badge {
+  background:rgba(255,45,155,0.07);
+  border:1.5px solid rgba(199,125,255,0.2);
+  border-radius:14px; padding:8px 12px;
+  font-size:10px; font-weight:800; text-align:center;
+  opacity:0.3; transition:all 0.4s;
+  min-width:60px;
+}
+.badge.earned {
+  opacity:1; border-color:var(--gold);
+  background:rgba(255,215,0,0.1);
+  box-shadow:0 0 14px rgba(255,215,0,0.3);
+  animation:celebrate 0.6s ease;
+}
+.badge-icon { font-size:20px; display:block; margin-bottom:3px; }
+
+/* HERO AVATAR */
+.hero-row { display:flex; align-items:center; gap:14px; margin-bottom:16px; }
+.hero-avi {
+  font-size:52px;
+  animation:float 3s ease-in-out infinite;
+  filter:drop-shadow(0 6px 16px rgba(255,133,200,0.5));
+}
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+.hero-info { flex:1; text-align:right; }
+.hero-name-tag {
+  font-family:'Pacifico',cursive; font-size:20px;
+  background:var(--chrome); -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text; background-size:300% 300%;
+  animation:chromeShift 4s ease infinite;
+}
+.hero-bubble-text { font-size:12px; color:rgba(232,224,255,0.65); margin-top:3px; line-height:1.5; font-weight:600; }
+
+/* CONFETTI */
+.confetti-wrap { position:fixed; inset:0; pointer-events:none; z-index:200; }
+.cp { position:absolute; border-radius:2px; animation:cfFall linear forwards; }
+@keyframes cfFall { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(100vh) rotate(540deg);opacity:0} }
+
+/* SPINNER */
+.spin { width:22px;height:22px;border:3px solid rgba(199,125,255,0.3);border-top-color:var(--lilac);border-radius:50%;animation:spinR 0.7s linear infinite;display:inline-block; }
+@keyframes spinR { to{transform:rotate(360deg)} }
+
+/* SECTION DIVIDER */
+.sec-div { text-align:center; font-size:13px; font-weight:800; color:rgba(232,224,255,0.35); letter-spacing:3px; text-transform:uppercase; margin:6px 0 12px; }
+</style>
+</head>
+<body>
+<div class="confetti-wrap" id="cfWrap"></div>
+
+<div class="app">
+
+  <!-- HERO BANNER -->
+  <div class="hero-banner">
+    <div class="neta-title">נטע</div>
+    <div class="title-sub">english adventure ✦ y2k edition</div>
+  </div>
+  <div class="bling">💎 ✨ 💅 ✨ 💎</div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-pill">
+      <div class="stat-num" id="starsNum">0</div>
+      <div class="stat-label">⭐ כוכבות</div>
+    </div>
+    <div class="stat-pill">
+      <div class="stat-num" id="levelNum">1</div>
+      <div class="stat-label">👑 רמה</div>
+    </div>
+    <div class="stat-pill">
+      <div class="stat-num" id="totalQ">0</div>
+      <div class="stat-label">🎯 שאלות</div>
+    </div>
+  </div>
+
+  <!-- XP -->
+  <div class="xp-wrap">
+    <div class="xp-meta">
+      <span>✨ XP לרמה הבאה</span>
+      <span id="xpText">0 / 100</span>
+    </div>
+    <div class="xp-track"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+  </div>
+
+  <!-- STREAK -->
+  <div class="streak-row">
+    <span>🔥 רצף</span>
+    <span class="streak-num" id="streakNum">0</span>
+    <span>תשובות נכונות ברצף!</span>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero-row">
+    <span class="hero-avi" id="heroAvi">💅</span>
+    <div class="hero-info">
+      <div class="hero-name-tag" id="heroTitle">נטע הכוכבת ⭐</div>
+      <div class="hero-bubble-text" id="heroBubble">היי נטע! בואי נהפוך לגורו של אנגלית! 💜✨</div>
+    </div>
+  </div>
+
+  <!-- BADGES -->
+  <div class="badges-wrap">
+    <div class="badges-label">🏆 תגים</div>
+    <div class="badges">
+      <div class="badge" id="b-first"><span class="badge-icon">🌟</span>ראשונה!</div>
+      <div class="badge" id="b-s3"><span class="badge-icon">🔥</span>3 ברצף</div>
+      <div class="badge" id="b-s5"><span class="badge-icon">⚡</span>5 ברצף</div>
+      <div class="badge" id="b-s10"><span class="badge-icon">👑</span>10 ברצף</div>
+      <div class="badge" id="b-letters"><span class="badge-icon">🔤</span>ABC</div>
+      <div class="badge" id="b-words"><span class="badge-icon">📖</span>מילים!</div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('letters')">🔤 אותיות</button>
+    <button class="tab" onclick="switchTab('words')">📖 מילים</button>
+    <button class="tab" onclick="switchTab('match')">💎 התאמה</button>
+  </div>
+
+  <!-- GAME CARD -->
+  <div class="game-card">
+    <div class="game-title" id="gTitle">איזו אות זו? 💅</div>
+    <div id="gContent" style="width:100%"></div>
+    <div class="ai-box loading" id="aiBox"><span>💜</span><span>בואי נתחיל! 🌟</span></div>
+    <button class="next-btn" id="nextBtn" onclick="nextQ()" disabled>הבאה ✨</button>
+  </div>
+
+</div>
+
+<script>
+// ── DATA ──
+const LETTERS = [
+  {l:'A',w:'Apple',e:'🍎'},{l:'B',w:'Ball',e:'⚽'},{l:'C',w:'Cat',e:'🐱'},
+  {l:'D',w:'Dog',e:'🐶'},{l:'E',w:'Elephant',e:'🐘'},{l:'F',w:'Fish',e:'🐠'},
+  {l:'G',w:'Gift',e:'🎁'},{l:'H',w:'Heart',e:'❤️'},{l:'I',w:'Ice cream',e:'🍦'},
+  {l:'J',w:'Jellyfish',e:'🪼'},{l:'K',w:'King',e:'👑'},{l:'L',w:'Lion',e:'🦁'},
+  {l:'M',w:'Moon',e:'🌙'},{l:'N',w:'Night',e:'🌟'},{l:'O',w:'Orange',e:'🍊'},
+  {l:'P',w:'Pizza',e:'🍕'},{l:'Q',w:'Queen',e:'👸'},{l:'R',w:'Rainbow',e:'🌈'},
+  {l:'S',w:'Star',e:'⭐'},{l:'T',w:'Tiger',e:'🐯'},{l:'U',w:'Unicorn',e:'🦄'},
+  {l:'V',w:'Violin',e:'🎻'},{l:'W',w:'Whale',e:'🐋'},{l:'X',w:'X-ray',e:'🦴'},
+  {l:'Y',w:'Yellow',e:'💛'},{l:'Z',w:'Zebra',e:'🦓'},
+];
+const WORDS = [
+  {word:'CAT',e:'🐱',heb:'חתול',ls:['C','A','T']},
+  {word:'DOG',e:'🐶',heb:'כלב',ls:['D','O','G']},
+  {word:'SUN',e:'☀️',heb:'שמש',ls:['S','U','N']},
+  {word:'RED',e:'🔴',heb:'אדום',ls:['R','E','D']},
+  {word:'BIG',e:'🐘',heb:'גדול',ls:['B','I','G']},
+  {word:'HOT',e:'🔥',heb:'חם',ls:['H','O','T']},
+  {word:'FUN',e:'🎉',heb:'כיף',ls:['F','U','N']},
+  {word:'MAP',e:'🗺️',heb:'מפה',ls:['M','A','P']},
+  {word:'FLY',e:'🦋',heb:'לטוס',ls:['F','L','Y']},
+  {word:'PIG',e:'🐷',heb:'חזיר',ls:['P','I','G']},
+];
+const MATCH_POOL = [
+  {l:'A',e:'🍎'},{l:'B',e:'⚽'},{l:'C',e:'🐱'},{l:'D',e:'🐶'},
+  {l:'E',e:'🐘'},{l:'F',e:'🐠'},{l:'G',e:'🎁'},{l:'H',e:'❤️'},
+  {l:'S',e:'⭐'},{l:'T',e:'🐯'},{l:'U',e:'🦄'},{l:'R',e:'🌈'},
+  {l:'M',e:'🌙'},{l:'L',e:'🦁'},{l:'P',e:'🍕'},{l:'K',e:'👑'},
+];
+const HEROES = [
+  {avi:'💅',title:'נטע הכוכבת ⭐',xpMin:0},
+  {avi:'👸',title:'נטע הנסיכה 👑',xpMin:150},
+  {avi:'🧚‍♀️',title:'נטע הפיה ✨',xpMin:400},
+  {avi:'🌟',title:'נטע האגדה 💎',xpMin:900},
+];
+
+// ── STATE ──
+const S = {
+  stars:0,xp:0,level:1,streak:0,tab:'letters',
+  answered:false,correct:'',
+  badges:{first:false,s3:false,s5:false,s10:false,letters:false,words:false},
+  lettersDone:0,totalQ:0,
+};
+let wordProg=[], curWord=null, matchSel=null, matchFound=0, matchTotal=0;
+
+// ── INIT ──
+function init(){ spawnSparkles(); nextQ(); }
+
+function spawnSparkles(){
+  const emojis=['✨','💎','💅','🌟','💜','🩷'];
+  for(let i=0;i<12;i++){
+    const s=document.createElement('div');
+    s.className='sparkle';
+    s.textContent=emojis[i%emojis.length];
+    s.style.left=Math.random()*100+'vw';
+    s.style.animationDuration=(8+Math.random()*12)+'s';
+    s.style.animationDelay=(Math.random()*10)+'s';
+    s.style.fontSize=(10+Math.random()*12)+'px';
+    document.body.appendChild(s);
+  }
+}
+
+// ── TABS ──
+function switchTab(t){
+  S.tab=t; S.answered=false;
+  document.querySelectorAll('.tab').forEach((b,i)=>{
+    b.classList.toggle('active',['letters','words','match'][i]===t);
+  });
+  nextQ();
+}
+
+// ── QUESTIONS ──
+function nextQ(){
+  S.answered=false;
+  document.getElementById('nextBtn').disabled=true;
+  setAI('<span class="spin"></span><span style="margin-right:8px">סטלה חושבת...</span>','loading');
+  if(S.tab==='letters') buildLetter();
+  else if(S.tab==='words') buildWord();
+  else buildMatch();
+}
+
+function buildLetter(){
+  const idx=Math.floor(Math.random()*LETTERS.length);
+  const ok=LETTERS[idx]; S.correct=ok.l;
+  const opts=[ok,...LETTERS.filter(x=>x.l!==ok.l).sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);
+  document.getElementById('gTitle').textContent='מה האות? 💅';
+  document.getElementById('gContent').innerHTML=`
+    <div class="big-letter">${ok.l}</div>
+    <div class="letter-hint">${ok.e} ${ok.w}</div>
+    <div class="choices">
+      ${opts.map(o=>`<button class="choice-btn" onclick="pickLetter('${o.l}',this)">${o.l}</button>`).join('')}
+    </div>`;
+  setAI('<span>💅</span><span>מה האות הזו? תחשבי טוב!</span>','');
+}
+
+function buildWord(){
+  curWord=WORDS[Math.floor(Math.random()*WORDS.length)];
+  const shuf=[...curWord.ls].sort(()=>Math.random()-.5);
+  wordProg=[];
+  document.getElementById('gTitle').textContent=`סדרי את האותיות! ${curWord.e}`;
+  document.getElementById('gContent').innerHTML=`
+    <div style="font-size:58px;margin-bottom:10px">${curWord.e}</div>
+    <div style="font-size:13px;color:rgba(232,224,255,0.55);margin-bottom:10px">
+      עברית: <strong style="color:var(--gold)">${curWord.heb}</strong>
+    </div>
+    <div class="word-display" id="wSlots">
+      ${curWord.ls.map(()=>'<div class="letter-box">_</div>').join('')}
+    </div>
+    <div style="font-size:12px;color:rgba(232,224,255,0.4);margin-bottom:10px">לחצי על האותיות בסדר הנכון:</div>
+    <div class="letter-pick-btns" id="lPicks">
+      ${shuf.map(l=>`<button class="lpick" onclick="pickWordLetter('${l}',this)">${l}</button>`).join('')}
+    </div>`;
+  setAI('<span>💜</span><span>סדרי את האותיות! את יכולה! ✨</span>','');
+}
+
+function pickWordLetter(l,btn){
+  if(S.answered) return;
+  wordProg.push(l); btn.disabled=true;
+  const slots=document.querySelectorAll('#wSlots .letter-box');
+  const i=wordProg.length-1;
+  if(i<slots.length){ slots[i].textContent=l; slots[i].classList.add('filled'); }
+  if(wordProg.length===curWord.ls.length){
+    resolve(wordProg.join('')===curWord.word);
+  }
+}
+
+function buildMatch(){
+  const pairs=MATCH_POOL.sort(()=>Math.random()-.5).slice(0,4);
+  matchSel=null; matchFound=0; matchTotal=pairs.length;
+  const all=[
+    ...pairs.map(p=>({type:'l',val:p.l,pair:p.l})),
+    ...pairs.map(p=>({type:'e',val:p.e,pair:p.l}))
+  ].sort(()=>Math.random()-.5);
+  document.getElementById('gTitle').textContent='חברי אות לתמונה! 💎';
+  document.getElementById('gContent').innerHTML=`
+    <div style="font-size:12px;color:rgba(232,224,255,0.45);margin-bottom:12px">לחצי על אות ואז על הציור</div>
+    <div class="match-grid" id="mGrid">
+      ${all.map(item=>`
+        <button class="match-btn" id="mb-${item.type}-${encodeURIComponent(item.val)}"
+          onclick="pickMatch('${item.type}','${item.val}','${item.pair}')">
+          ${item.val}
+        </button>`).join('')}
+    </div>`;
+  setAI('<span>💎</span><span>חברי כל אות לתמונה שלה!</span>','');
+}
+
+function pickMatch(type,val,pair){
+  if(!matchSel){
+    if(type!=='l'){ setAI('<span>💜</span><span>קודם בחרי אות! ✨</span>',''); return; }
+    matchSel={type,val,pair};
+    document.getElementById(`mb-l-${encodeURIComponent(val)}`).classList.add('selected-m');
+  } else {
+    if(type==='l'){
+      document.getElementById(`mb-l-${encodeURIComponent(matchSel.val)}`).classList.remove('selected-m');
+      matchSel={type,val,pair};
+      document.getElementById(`mb-l-${encodeURIComponent(val)}`).classList.add('selected-m');
+      return;
+    }
+    const ok=pair===matchSel.val;
+    const lb=document.getElementById(`mb-l-${encodeURIComponent(matchSel.val)}`);
+    const eb=document.getElementById(`mb-e-${encodeURIComponent(val)}`);
+    if(ok){
+      lb.classList.add('correct'); eb.classList.add('correct');
+      lb.disabled=true; eb.disabled=true;
+      matchFound++;
+      if(matchFound===matchTotal){ resolve(true); }
+      else { addXP(15); addStars(1); setAI('<span>🌟</span><span>נכון! ממשיכים! 💅</span>',''); }
+    } else {
+      lb.classList.add('wrong'); eb.classList.add('wrong');
+      setTimeout(()=>{ lb.classList.remove('wrong','selected-m'); eb.classList.remove('wrong'); },550);
+      S.streak=0; updateStreak();
+    }
+    matchSel=null;
+  }
+}
+
+function pickLetter(chosen,btn){
+  if(S.answered) return;
+  btn.classList.add(chosen===S.correct?'correct':'wrong');
+  if(chosen!==S.correct){
+    document.querySelectorAll('.choice-btn').forEach(b=>{ if(b.textContent.trim()===S.correct) b.classList.add('correct'); });
+  }
+  document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);
+  resolve(chosen===S.correct);
+}
+
+async function resolve(ok){
+  S.answered=true; S.totalQ++;
+  document.getElementById('totalQ').textContent=S.totalQ;
+  if(ok){
+    S.streak++; addXP(35); addStars(2);
+    if(S.tab==='letters') S.lettersDone++;
+    checkBadges(); confetti();
+  } else { S.streak=0; }
+  updateStreak(); updateHero();
+  document.getElementById('nextBtn').disabled=false;
+  await getAI(ok);
+}
+
+// ── AI ──
+async function getAI(ok){
+  const prompt = ok
+    ? `You are Stella, an ultra-fun encouraging AI coach for 9-year-old Israeli girl Neta learning English from zero.
+She got it RIGHT! Write a SHORT celebration in Hebrew (max 2 sentences, under 25 words).
+Use lots of pink/star emojis 💅✨🌟💎. Mention her streak of ${S.streak} if >1. Be like her hyped bestie!`
+    : `You are Stella, an ultra-fun encouraging AI coach for 9-year-old Israeli girl Neta learning English from zero.
+She got it WRONG. Write a VERY gentle warm cheer in Hebrew (max 2 sentences, under 25 words).
+Use 💜🩷✨ emojis. Be super kind, like a big sister. Say she'll nail it next time!`;
+  try {
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+    });
+    const d=await r.json();
+    const txt=d.content?.[0]?.text||(ok?'🌟 כל הכבוד נטע! את מדהימה!':'💜 לא נורא! הפעם הבאה תהיה מושלמת!');
+    setAI(`<span>${ok?'🌟':'💜'}</span><span>${txt}</span>`,'');
+    document.getElementById('heroBubble').textContent=txt;
+  } catch {
+    setAI(`<span>${ok?'💅':'💜'}</span><span>${ok?'כל הכבוד נטע! את פשוט אלופה! ✨':'לא נורא ♥️ ננסה שוב, את תעשי את זה!'}</span>`,'');
+  }
+}
+
+function setAI(html,cls){
+  const el=document.getElementById('aiBox');
+  el.innerHTML=html; el.className='ai-box'+(cls?' '+cls:'');
+}
+
+// ── XP / STARS ──
+function addXP(n){
+  S.xp+=n;
+  const need=S.level*100;
+  if(S.xp>=need){ S.xp-=need; S.level++; document.getElementById('levelNum').textContent=S.level; }
+  const pct=(S.xp/(S.level*100))*100;
+  document.getElementById('xpFill').style.width=pct+'%';
+  document.getElementById('xpText').textContent=`${S.xp} / ${S.level*100}`;
+}
+function addStars(n){
+  S.stars+=n;
+  const el=document.getElementById('starsNum');
+  el.textContent=S.stars;
+  el.style.transform='scale(1.5)';
+  setTimeout(()=>el.style.transform='scale(1)',300);
+}
+function updateStreak(){ document.getElementById('streakNum').textContent=S.streak; }
+function updateHero(){
+  const h=[...HEROES].reverse().find(h=>S.level>=HEROES.indexOf(HEROES.find(x=>x===h))+1)||HEROES[0];
+  const idx=Math.min(S.level-1,HEROES.length-1);
+  document.getElementById('heroAvi').textContent=HEROES[idx].avi;
+  document.getElementById('heroTitle').textContent=HEROES[idx].title;
+}
+
+// ── BADGES ──
+function checkBadges(){
+  if(!S.badges.first){ S.badges.first=true; earnBadge('b-first'); }
+  if(S.streak>=3&&!S.badges.s3){ S.badges.s3=true; earnBadge('b-s3'); }
+  if(S.streak>=5&&!S.badges.s5){ S.badges.s5=true; earnBadge('b-s5'); }
+  if(S.streak>=10&&!S.badges.s10){ S.badges.s10=true; earnBadge('b-s10'); }
+  if(S.lettersDone>=5&&!S.badges.letters){ S.badges.letters=true; earnBadge('b-letters'); }
+  if(S.tab==='words'&&!S.badges.words){ S.badges.words=true; earnBadge('b-words'); }
+}
+function earnBadge(id){
+  const el=document.getElementById(id);
+  if(el){ el.classList.add('earned'); addStars(5); confetti(); }
+}
+
+// ── CONFETTI ──
+function confetti(){
+  const wrap=document.getElementById('cfWrap');
+  const cols=['#FF2D9B','#C77DFF','#FFD700','#FF85C8','#00E6A0','#E8E0FF'];
+  for(let i=0;i<28;i++){
+    const p=document.createElement('div'); p.className='cp';
+    p.style.left=Math.random()*100+'vw';
+    p.style.top='-12px';
+    p.style.width=p.style.height=(6+Math.random()*9)+'px';
+    p.style.background=cols[Math.floor(Math.random()*cols.length)];
+    p.style.animationDuration=(1.2+Math.random()*1.2)+'s';
+    p.style.animationDelay=(Math.random()*0.5)+'s';
+    wrap.appendChild(p);
+    setTimeout(()=>p.remove(),2500);
+  }
+}
+
+init();
+</script>
+</body>
+</html>
