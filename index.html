@@ -512,16 +512,58 @@ const HEROES = [
 ];
 
 // ── STATE ──
-const S = {
+const S_DEFAULT = {
   stars:0,xp:0,level:1,streak:0,tab:'letters',
   answered:false,correct:'',
   badges:{first:false,s3:false,s5:false,s10:false,letters:false,words:false},
-  lettersDone:0,totalQ:0,
+  lettersDone:0,totalQ:0,muted:false,
 };
+
+function loadState(){
+  try {
+    const saved = localStorage.getItem('neta_progress');
+    if(saved){
+      const parsed = JSON.parse(saved);
+      return {...S_DEFAULT, ...parsed, badges:{...S_DEFAULT.badges,...(parsed.badges||{})}};
+    }
+  } catch(e){}
+  return {...S_DEFAULT};
+}
+
+function saveState(){
+  try {
+    const toSave = {
+      stars:S.stars, xp:S.xp, level:S.level,
+      badges:S.badges, lettersDone:S.lettersDone, totalQ:S.totalQ
+    };
+    localStorage.setItem('neta_progress', JSON.stringify(toSave));
+  } catch(e){}
+}
+
+const S = loadState();
 let wordProg=[], curWord=null, matchSel=null, matchFound=0, matchTotal=0;
 
 // ── INIT ──
-function init(){ spawnSparkles(); nextQ(); }
+function init(){
+  spawnSparkles();
+  // Restore UI from saved state
+  document.getElementById('starsNum').textContent = S.stars;
+  document.getElementById('levelNum').textContent = S.level;
+  document.getElementById('totalQ').textContent   = S.totalQ;
+  document.getElementById('xpText').textContent   = `${S.xp} / ${S.level*100}`;
+  document.getElementById('xpFill').style.width   = (S.xp/(S.level*100)*100)+'%';
+  document.getElementById('streakNum').textContent = S.streak;
+  updateHero();
+  // Restore earned badges
+  Object.entries(S.badges).forEach(([key,val])=>{
+    if(val){
+      const map={first:'b-first',s3:'b-s3',s5:'b-s5',s10:'b-s10',letters:'b-letters',words:'b-words'};
+      const el=document.getElementById(map[key]);
+      if(el) el.classList.add('earned');
+    }
+  });
+  nextQ();
+}
 
 function spawnSparkles(){
   const emojis=['✨','💎','💅','🌟','💜','🩷'];
@@ -691,7 +733,7 @@ async function resolve(ok){
     S.streak=0;
     sfx(soundWrong);
   }
-  updateStreak(); updateHero();
+  updateStreak(); updateHero(); saveState();
   document.getElementById('nextBtn').disabled=false;
   await getAI(ok);
 }
@@ -738,6 +780,7 @@ function addXP(n){
   const pct=(S.xp/(S.level*100))*100;
   document.getElementById('xpFill').style.width=pct+'%';
   document.getElementById('xpText').textContent=`${S.xp} / ${S.level*100}`;
+  saveState();
 }
 function addStars(n){
   S.stars+=n;
@@ -745,6 +788,7 @@ function addStars(n){
   el.textContent=S.stars;
   el.style.transform='scale(1.5)';
   setTimeout(()=>el.style.transform='scale(1)',300);
+  saveState();
 }
 function updateStreak(){ document.getElementById('streakNum').textContent=S.streak; }
 function updateHero(){
@@ -765,7 +809,7 @@ function checkBadges(){
 }
 function earnBadge(id, name='תג חדש'){
   const el=document.getElementById(id);
-  if(el){ el.classList.add('earned'); addStars(5); confetti(); sfx(soundFanfare); notifyBadge(name); }
+  if(el){ el.classList.add('earned'); addStars(5); confetti(); sfx(soundFanfare); notifyBadge(name); saveState(); }
 }
 
 // ── CONFETTI ──
